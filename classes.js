@@ -62,24 +62,27 @@ class Clinic {
     const patientId = this.generatePatientId();
     const p = new Patient(patientId, name, age, phone);
     this._patients.push(p);
+    return p;
   }
 
   hireDoctor(name, speciality) {
     const doctorId = this.generateDoctorId();
     const d = new Doctor(doctorId, name, speciality);
     this._doctors.push(d);
+    return d;
   }
 
   scheduleAppointment(patient, doctor, date) {
     const isPatient = this._patients.some((item) => item.id === patient.id);
-    const isDoctor = this._doctors.some((item) => item.id === doctor.id);
-    if (isPatient && isDoctor) {
+    const doctorInstance = this._doctors.find((obj) => obj.id === doctor.id);
+    if (isPatient && doctorInstance) {
       const appointmentId = this.generateAppointmentId();
-      const a = new Appointment(appointmentId, patient, doctor, date);
-      this._appointments.push(a);
-      doctor.addAppointment(a);
+      const appointment = new Appointment(appointmentId, patient, doctor, date);
+      this._appointments.push(appointment);
+      //add it to the doctor's schedule
+      doctorInstance.addAppointment(appointment);
     } else {
-      throw new Error("Missing PAtient/Doctor");
+      throw new Error("Missing Patient/Doctor");
     }
   }
 }
@@ -186,7 +189,7 @@ class Appointment {
       throw new Error("Patient is required");
     }
     if (!doctor || typeof doctor !== "object") {
-      throw new Error("Patient is required");
+      throw new Error("Doctor is required");
     }
     if (!date || typeof date !== "string") {
       throw new Error("Invialid date");
