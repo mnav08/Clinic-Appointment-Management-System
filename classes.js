@@ -81,9 +81,64 @@ class Clinic {
       this._appointments.push(appointment);
       //add it to the doctor's schedule
       doctorInstance.addAppointment(appointment);
+      return appointment;
     } else {
       throw new Error("Missing Patient/Doctor");
     }
+  }
+
+  cancelAppointment(appointment) {
+    const isAppointment = this._appointments.some(
+      (obj) => obj.id === appointment.id,
+    );
+    if (isAppointment) {
+      appointment.cancel();
+    } else {
+      throw new Error("Appointment not found");
+    }
+  }
+
+  completeAppointment(appointment) {
+    const isAppointment = this._appointments.some(
+      (obj) => obj.id === appointment.id,
+    );
+    if (isAppointment) {
+      appointment.complete();
+    } else {
+      throw new Error("Appointment not found");
+    }
+  }
+
+  searchPatient(patient) {
+    const patientInstance = this._patients.find((obj) => obj.id === patient.id);
+    if (patientInstance) {
+      return patientInstance;
+    } else {
+      throw new Error("Patient not found");
+    }
+  }
+
+  searchDoctor(doctor) {
+    const doctorInstance = this._doctors.find((obj) => obj.id === doctor.id);
+    if (doctorInstance) {
+      return doctorInstance;
+    } else {
+      throw new Error("Doctor not found");
+    }
+  }
+
+  listAppointments(status = "Scheduled") {
+    const validStatuses = ["Scheduled", "Cancelled", "Completed"];
+    if (!validStatuses.includes(status)) {
+      return "Appointment not found";
+    }
+    return this._appointments.filter((obj) => obj.status === status);
+  }
+
+  getClinicStatistics() {
+    return `===Clinic Statistics===
+    Total Patients: ${this._patients.length}
+    Total Doctors: ${this._doctors.length}`;
   }
 }
 ////////////////////////////////////////////////////////////

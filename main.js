@@ -23,10 +23,16 @@ const doctor2 = hospital1.hireDoctor("Yesenia  Pacheco", "Pediatritian");
 const doctor3 = hospital1.hireDoctor("Naymy Pacheco", "Physician");
 const doctor4 = hospital1.hireDoctor("Freddy Campos", "Phlobotomist");
 
-hospital1.scheduleAppointment(patient1, doctor1, "2026-07-26 10:00");
+const app1 = hospital1.scheduleAppointment(
+  patient1,
+  doctor1,
+  "2026-07-26 10:00",
+);
 hospital1.scheduleAppointment(patient2, doctor1, "2026-07-25 11:00");
 hospital1.scheduleAppointment(patient3, doctor2, "2026-08-05 14:00");
 hospital1.scheduleAppointment(patient4, doctor3, "2026-08-01 10:00");
 hospital1.scheduleAppointment(patient4, doctor4, "2026-07-30 08:00");
 
-console.log(doctor4.getAppointments());
+hospital1.completeAppointment(app1);
+
+console.log(hospital1.getClinicStatistics());
