@@ -172,9 +172,7 @@ class Clinic {
         busiestDoctor = doctor;
       }
     }
-    const busiestDoctor = this._doctors.find(
-      (obj) => obj.id === busiestDoctorId,
-    );
+    const busyDoc = this._doctors.find((obj) => obj.id === busiestDoctor.id);
     //////////////////////////////////////////////////////////////
     return `===Clinic Statistics===
     Total Patients: ${this._patients.length}
@@ -184,7 +182,7 @@ class Clinic {
     Cancelled: ${cancelledAppointmentsArr.length}
     Completed: ${completedAppointmentsArr.length}
     Average Patient Age: ${avgAge}
-   Most Busy Doctor: ${busiestDoctor ? busiestDoctor.name : "None"} (${maxCount})`;
+   Most Busy Doctor: ${busyDoc.name} (${maxCount})`;
   }
 }
 ////////////////////////////////////////////////////////////
