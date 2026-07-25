@@ -136,9 +136,55 @@ class Clinic {
   }
 
   getClinicStatistics() {
+    const scheduledAppointmentsArr = this._appointments.filter(
+      (obj) => obj.status === "Scheduled",
+    );
+
+    const cancelledAppointmentsArr = this._appointments.filter(
+      (obj) => obj.status === "Cancelled",
+    );
+
+    const completedAppointmentsArr = this._appointments.filter(
+      (obj) => obj.status === "Completed",
+    );
+
+    // find the average age of patients
+    const sumAge = this._patients.reduce((accumulator, current) => {
+      return accumulator + current.age;
+    }, 0);
+    const avgAge = Math.floor(sumAge / this._patients.length);
+
+    // find the doctor with most appointments
+    const appointmentCounts = this._appointments.reduce((acc, appointment) => {
+      const doctorId = appointment.doctor.id; //access current obj then doctor then id propertie
+      acc[doctorId] = (acc[doctorId] || 0) + 1;
+      return acc;
+    }, {});
+
+    let maxCount = 0;
+    let busiestDoctor = null;
+
+    for (const doctor of this._doctors) {
+      const count = appointmentCounts[doctor.id] || 0; //get the value stored under the key equal to doctor.id
+
+      if (count > maxCount) {
+        maxCount = count;
+        busiestDoctor = doctor;
+      }
+    }
+    const busiestDoctor = this._doctors.find(
+      (obj) => obj.id === busiestDoctorId,
+    );
+    //////////////////////////////////////////////////////////////
     return `===Clinic Statistics===
     Total Patients: ${this._patients.length}
-    Total Doctors: ${this._doctors.length}`;
+    Total Doctors: ${this._doctors.length}
+    Appointments(${this._appointments.length}):
+    Scheduled:${scheduledAppointmentsArr.length}
+    Cancelled: ${cancelledAppointmentsArr.length}
+    Completed: ${completedAppointmentsArr.length}
+    Average Patient Age: ${avgAge}
+   Most Busy Doctor: ${busiestDoctor ? busiestDoctor.name : "None"} (${maxCount})`;
   }
 }
 ////////////////////////////////////////////////////////////
@@ -253,7 +299,7 @@ class Appointment {
     this.id = id;
     this.patient = patient;
     this.doctor = doctor;
-    this.date = appointmentDate;
+    this.date = appointmentDate.toLocaleString();
     this.status = status;
   }
 
