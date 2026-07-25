@@ -75,16 +75,37 @@ class Clinic {
   scheduleAppointment(patient, doctor, date) {
     const isPatient = this._patients.some((item) => item.id === patient.id);
     const doctorInstance = this._doctors.find((obj) => obj.id === doctor.id);
-    if (isPatient && doctorInstance) {
-      const appointmentId = this.generateAppointmentId();
-      const appointment = new Appointment(appointmentId, patient, doctor, date);
-      this._appointments.push(appointment);
-      //add it to the doctor's schedule
-      doctorInstance.addAppointment(appointment);
-      return appointment;
-    } else {
+    if (!isPatient || !doctorInstance) {
       throw new Error("Missing Patient/Doctor");
     }
+    if (new Date(date) < new Date()) {
+      throw new Error("You cannot schedule a past appointment");
+    }
+
+    const requestedTime = new Date(date).getTime();
+
+    const hasConflict = this._appointments.some((appointment) => {
+      return (
+        appointment.doctor.id === doctor.id &&
+        appointment.status === "Scheduled" &&
+        appointment.dateTime.getTime() === requestedTime
+      );
+    });
+
+    if (hasConflict) {
+      throw new Error("Doctor is already booked at that time");
+    }
+
+    const appointmentId = this.generateAppointmentId();
+    const newAppointment = new Appointment(
+      appointmentId,
+      patient,
+      doctor,
+      date,
+    );
+    this._appointments.push(newAppointment);
+    doctor.addAppointment(newAppointment);
+    return newAppointment;
   }
 
   cancelAppointment(appointment) {
@@ -158,12 +179,13 @@ class Clinic {
     const appointmentCounts = this._appointments.reduce((acc, appointment) => {
       const doctorId = appointment.doctor.id; //access current obj then doctor then id propertie
       acc[doctorId] = (acc[doctorId] || 0) + 1;
-      return acc;
+      return acc; //return obj with {'id': count}
     }, {});
 
-    let maxCount = 0;
-    let busiestDoctor = null;
+    let maxCount = 0; //keep track of count of doctor with most appointments
+    let busiestDoctor = null; // store the doctor obj with most appointments
 
+    // loop thru the doctors list item by item
     for (const doctor of this._doctors) {
       const count = appointmentCounts[doctor.id] || 0; //get the value stored under the key equal to doctor.id
 
@@ -172,7 +194,7 @@ class Clinic {
         busiestDoctor = doctor;
       }
     }
-    const busyDoc = this._doctors.find((obj) => obj.id === busiestDoctor.id);
+    const busyDoc = this._doctors.find((obj) => obj.id === busiestDoctor.id); // find the doctor obj with the given id
     //////////////////////////////////////////////////////////////
     return `===Clinic Statistics===
     Total Patients: ${this._patients.length}
@@ -182,7 +204,7 @@ class Clinic {
     Cancelled: ${cancelledAppointmentsArr.length}
     Completed: ${completedAppointmentsArr.length}
     Average Patient Age: ${avgAge}
-   Most Busy Doctor: ${busyDoc.name} (${maxCount})`;
+    Most Busy Doctor: ${busyDoc.name} (${maxCount})`;
   }
 }
 ////////////////////////////////////////////////////////////
@@ -297,7 +319,8 @@ class Appointment {
     this.id = id;
     this.patient = patient;
     this.doctor = doctor;
-    this.date = appointmentDate.toLocaleString();
+    this.date = appointmentDate.toLocaleString(); // Date() obj converted to string in local time
+    this.dateTime = appointmentDate; // Date() obj
     this.status = status;
   }
 

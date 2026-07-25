@@ -35,4 +35,4 @@ hospital1.scheduleAppointment(patient4, doctor4, "2026-07-30 08:00");
 
 hospital1.completeAppointment(app1);
 
-console.log(hospital1.getClinicStatistics());
+console.log(hospital1.listAppointments("Completed"));
