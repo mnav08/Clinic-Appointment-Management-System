@@ -47,7 +47,7 @@ class Clinic {
     let isUnique = false;
     //loop until a unique ID is generated
     while (!isUnique) {
-      newID = Math.floor(Math.random() * 1000) + 2000;
+      newID = Math.floor(Math.random() * 1000) + 3000;
 
       //check if the array contains the ID already
       if (!this._doctorIds.includes(newID)) {
@@ -214,8 +214,8 @@ class Patient {
     if (typeof age !== "number" || age < 0) {
       throw new Error("Patient age must be a non-negative number");
     }
-    if (typeof phone !== "string") {
-      throw new Error("Phone nuumber should be a string");
+    if (!newPhone || typeof phone !== "string") {
+      throw new Error("Phone number should be a string");
     }
 
     this.id = id;
@@ -233,9 +233,6 @@ class Patient {
   }
 
   updatePhone(newPhone) {
-    if (!newPhone) {
-      throw new Error("Invalid phone number");
-    }
     this.phone = newPhone;
   }
 
@@ -302,7 +299,7 @@ class Appointment {
       throw new Error("Doctor is required");
     }
     if (!date || typeof date !== "string") {
-      throw new Error("Invialid date");
+      throw new Error("Invalid date");
     }
     const appointmentDate = new Date(date);
     this.id = id;
