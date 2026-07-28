@@ -97,21 +97,14 @@ class Clinic {
     }
 
     const appointmentId = this.generateAppointmentId();
-    const newAppointment = new Appointment(
-      appointmentId,
-      patient,
-      doctor,
-      date,
-    );
+    const newAppointment = new Appointment(appointmentId, patient, doctor, date);
     this._appointments.push(newAppointment);
     doctor.addAppointment(newAppointment);
     return newAppointment;
   }
 
   cancelAppointment(appointment) {
-    const isAppointment = this._appointments.some(
-      (obj) => obj.id === appointment.id,
-    );
+    const isAppointment = this._appointments.some((obj) => obj.id === appointment.id);
     if (isAppointment) {
       appointment.cancel();
     } else {
@@ -120,9 +113,7 @@ class Clinic {
   }
 
   completeAppointment(appointment) {
-    const isAppointment = this._appointments.some(
-      (obj) => obj.id === appointment.id,
-    );
+    const isAppointment = this._appointments.some((obj) => obj.id === appointment.id);
     if (isAppointment) {
       appointment.complete();
     } else {
@@ -148,26 +139,32 @@ class Clinic {
     }
   }
 
-  listAppointments(status = "Scheduled") {
-    const validStatuses = ["Scheduled", "Cancelled", "Completed"];
+  listAppointments(status = "Scheduled", date = null) {
+    const validStatuses = ["Scheduled", "Cancelled", "Completed"]; //list of valid inputs
     if (!validStatuses.includes(status)) {
-      return "Appointment not found";
+      //if status is not in the list throw errors
+      throw new Error("Appointment invalid status");
     }
-    return this._appointments.filter((obj) => obj.status === status);
+    let findAppointment = this._appointments.filter((obj) => obj.status === status);
+
+    if (date) {
+      // find appointment by date(no time included)
+      findAppointment = findAppointment.filter((obj) => {
+        const appointmentDate = obj.dateTime;
+        const selectedDate = new Date(date);
+
+        return appointmentDate.toDateString() === selectedDate.toDateString();
+      });
+    }
+    return findAppointment;
   }
 
   getClinicStatistics() {
-    const scheduledAppointmentsArr = this._appointments.filter(
-      (obj) => obj.status === "Scheduled",
-    );
+    const scheduledAppointmentsArr = this._appointments.filter((obj) => obj.status === "Scheduled");
 
-    const cancelledAppointmentsArr = this._appointments.filter(
-      (obj) => obj.status === "Cancelled",
-    );
+    const cancelledAppointmentsArr = this._appointments.filter((obj) => obj.status === "Cancelled");
 
-    const completedAppointmentsArr = this._appointments.filter(
-      (obj) => obj.status === "Completed",
-    );
+    const completedAppointmentsArr = this._appointments.filter((obj) => obj.status === "Completed");
 
     // find the average age of patients
     const sumAge = this._patients.reduce((accumulator, current) => {
@@ -243,14 +240,10 @@ class Patient {
   }
 
   getSummary() {
-    const formattedHistory = this.medicalHistory
-      .map((el) => `- ${el}`)
-      .join("\n");
+    const formattedHistory = this.medicalHistory.map((el) => `- ${el}`).join("\n");
 
     const historyLength =
-      this.medicalHistory.length <= 0
-        ? "No medical Record found"
-        : this.medicalHistory.length;
+      this.medicalHistory.length <= 0 ? "No medical Record found" : this.medicalHistory.length;
 
     return `Patient Information Summary
       =============================================
@@ -284,17 +277,13 @@ class Doctor {
   }
 
   removeAppointment(appointmentId) {
-    const toBeRemoved = this.appointments.find(
-      (item) => item.id === appointmentId,
-    );
+    const toBeRemoved = this.appointments.find((item) => item.id === appointmentId);
 
     if (!toBeRemoved) {
       throw new Error("Appointment not found");
     }
 
-    const newArray = this.appointments.filter(
-      (element) => element.id !== appointmentId,
-    );
+    const newArray = this.appointments.filter((element) => element.id !== appointmentId);
     this.appointments = newArray;
   }
 
