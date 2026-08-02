@@ -1,6 +1,6 @@
 import Classes from "./classes.js";
 
-const { Clinic, Patient, Doctor, Appointment } = Classes; //destructuring eq to const hospital1 = Classes.Clinic();
+const { Clinic, Patient, Doctor, Appointment } = Classes; //destructuring equal to const hospital1 = Classes.Clinic();
 
 const hospital1 = new Clinic();
 
@@ -21,7 +21,7 @@ const doctor5 = hospital1.hireDoctor("Aaron Jhonson", "Physician");
 const app1 = hospital1.scheduleAppointment(patient1, doctor1, "2026-08-26 10:00");
 const app2 = hospital1.scheduleAppointment(patient2, doctor2, "2026-08-20 11:00");
 const app3 = hospital1.scheduleAppointment(patient3, doctor1, "2026-08-05 14:00");
-const app4 = hospital1.scheduleAppointment(patient4, doctor5, "2026-08-01 10:00");
+const app4 = hospital1.scheduleAppointment(patient4, doctor5, "2026-08-10 10:00");
 const app5 = hospital1.scheduleAppointment(patient5, doctor4, "2026-09-30 15:00");
 const app6 = hospital1.scheduleAppointment(patient1, doctor4, "2026-09-30 08:00");
 const app7 = hospital1.scheduleAppointment(patient6, doctor3, "2026-09-30 08:00");
@@ -29,5 +29,8 @@ const app8 = hospital1.scheduleAppointment(patient7, doctor5, "2026-09-30 08:00"
 const app9 = hospital1.scheduleAppointment(patient1, doctor5, "2026-08-03 08:00");
 
 hospital1.completeAppointment(app1);
+hospital1.completeAppointment(app2);
+hospital1.cancelAppointment(app3);
 
-console.log(hospital1.listAppointments("Completed", "2026-08-26 15:00"));
+//console.log(hospital1.listAppointments("Completed", "2026-08-20 08:00"));
+console.log(hospital1.getClinicStatistics());

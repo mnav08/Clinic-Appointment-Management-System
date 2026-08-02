@@ -214,7 +214,7 @@ class Patient {
     if (typeof age !== "number" || age < 0) {
       throw new Error("Patient age must be a non-negative number");
     }
-    if (!newPhone || typeof phone !== "string") {
+    if (!phone || typeof phone !== "string") {
       throw new Error("Phone number should be a string");
     }
 
